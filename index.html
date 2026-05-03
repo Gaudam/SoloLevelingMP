@@ -662,37 +662,42 @@
         };
 
         const DEFAULT_QUESTS = [
-            { id: 'q1', text: "Wake up before 7:00 AM", xp: 15, xpPercent: 1, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { willpower: 1 }, deadline: '', points: 1 },
-            { id: 'q2', text: "8 Hours Productive Work", xp: 80, xpPercent: 3, category: 'daily', path: 'work', isOneTime: false, repeatable: false, rewards: { willpower: 1, sense: 1 }, deadline: '', points: 3 },
-            { id: 'q3', text: "Healthy Breakfast", xp: 20, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 1 }, deadline: '', points: 1 },
-            { id: 'q4', text: "Healthy Lunch", xp: 20, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 1 }, deadline: '', points: 1 },
-            { id: 'q5', text: "Healthy Dinner", xp: 20, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 1 }, deadline: '', points: 1 },
-            { id: 'q6', text: "7/8 Hours Sleep", xp: 20, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 1 }, deadline: '', points: 1 },
-            { id: 'q7', text: "Laundry Clothes", xp: 20, xpPercent: 1, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
-            { id: 'q8', text: "Laundry Towels", xp: 20, xpPercent: 1, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
-            { id: 'q9', text: "Laundry Underwear/Socks", xp: 20, xpPercent: 1, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
-            { id: 'q10', text: "Emptying trash cans", xp: 20, xpPercent: 1, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
-            { id: 'q11', text: "Walk for 30 minutes", xp: 40, xpPercent: 5, category: 'daily', path: 'all', isOneTime: false, repeatable: true, rewards: { vitality: 1, agility: 1, willpower: 1 }, deadline: '', points: 2 },
-            { id: 'q12', text: "Exercise for 30 minutes", xp: 40, xpPercent: 5, category: 'daily', path: 'all', isOneTime: false, repeatable: true, rewards: { vitality: 1, strength: 1, willpower: 1 }, deadline: '', points: 3 },
-            { id: 'q13', text: "Cleaning living room", xp: 50, xpPercent: 1, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
-            { id: 'q14', text: "Cleaning bedroom", xp: 50, xpPercent: 1, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
-            { id: 'q15', text: "Cleaning bathroom", xp: 50, xpPercent: 1, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
-            { id: 'q16', text: "Cleaning balcony", xp: 50, xpPercent: 1, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
-            { id: 'q17', text: "Cleaning kitchen", xp: 50, xpPercent: 1, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
-            { id: 'q18', text: "Visiting mom", xp: 50, xpPercent: 1, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1, willpower: 1 }, deadline: '', points: 0 },
-            { id: 'q19', text: "Win a ranked game", xp: 5, xpPercent: 0, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { instinct: 1, focus: 1 }, deadline: '', points: 1 },
-            { id: 'q20', text: "Read 10 pages of a non-fiction book", xp: 60, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { intelligence: 2, focus: 1 }, deadline: '', points: 3 },
-            { id: 'q21', text: "Write 1 page", xp: 40, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: true, rewards: { intelligence: 1, focus: 1, ap: 1 }, deadline: '', points: 2 },
-            { id: 'q22', text: "Grocery shopping", xp: 20, xpPercent: 1, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 1 },
-            { id: 'q23', text: "Financial planning", xp: 20, xpPercent: 1, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { intelligence: 1, sense: 1 }, deadline: '', points: 0 },
-            { id: 'q24', text: "Keep a journal", xp: 30, xpPercent: 1, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { intelligence: 1, sense: 1 }, deadline: '', points: 0 },
-            { id: 'q25', text: "No Sugar", xp: 30, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 2, willpower: 1, sense: 1 }, deadline: '', points: 3 },
-            { id: 'q26', text: "Lose 1 kg", xp: 100, xpPercent: 1, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 2, willpower: 1, sense: 1 }, deadline: '', points: 0 },
-            { id: 'q27', text: "Water only", xp: 30, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 2, willpower: 1, sense: 1 }, deadline: '', points: 2 },
-            { id: 'q28', text: "Organize workspace", xp: 30, xpPercent: 1, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 1 },
-            { id: 'q29', text: "Call mom", xp: 10, xpPercent: 1, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 1 },
-            { id: 'q30', text: "Study 20 minutes", xp: 40, xpPercent: 5, category: 'daily', path: 'all', isOneTime: false, repeatable: true, rewards: { intelligence: 2, focus: 1, sense: 1 }, deadline: '', points: 2 },
-            { id: 'q31', text: "Save 500 euro", xp: 100, xpPercent: 5, category: 'monthly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 5, willpower: 5, intelligence: 5, ap: 5 }, deadline: '', points: 0 }
+            // DAILY QUESTS
+            { id: 'd1', text: "Wake up before 7:00 AM", xp: 15, xpPercent: 1, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { willpower: 1 }, deadline: '', points: 1 },
+                { id: 'd2', text: "8 Hours Productive Work", xp: 80, xpPercent: 3, category: 'daily', path: 'work', isOneTime: false, repeatable: false, rewards: { willpower: 1, sense: 1 }, deadline: '', points: 3 },
+                { id: 'd3', text: "Healthy Breakfast", xp: 20, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 1 }, deadline: '', points: 1 },
+                { id: 'd4', text: "Healthy Lunch", xp: 20, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 1 }, deadline: '', points: 1 },
+                { id: 'd5', text: "Healthy Dinner", xp: 20, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 1 }, deadline: '', points: 1 },
+                { id: 'd6', text: "7/8 Hours Sleep", xp: 20, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 1 }, deadline: '', points: 1 },
+                { id: 'd7', text: "Walk for 30 minutes", xp: 40, xpPercent: 5, category: 'daily', path: 'all', isOneTime: false, repeatable: true, rewards: { vitality: 1, agility: 1, willpower: 1 }, deadline: '', points: 2 },
+                { id: 'd8', text: "Exercise for 30 minutes", xp: 40, xpPercent: 5, category: 'daily', path: 'all', isOneTime: false, repeatable: true, rewards: { vitality: 1, strength: 1, willpower: 1 }, deadline: '', points: 3 },
+                { id: 'd9', text: "Win a ranked game", xp: 5, xpPercent: 0, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { instinct: 1, focus: 1 }, deadline: '', points: 1 },
+                { id: 'd10', text: "Read 10 pages of a non-fiction book", xp: 60, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { intelligence: 2, focus: 1 }, deadline: '', points: 3 },
+                { id: 'd11', text: "Write 1 page", xp: 40, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: true, rewards: { intelligence: 1, focus: 1, ap: 1 }, deadline: '', points: 2 },
+                { id: 'd12', text: "Grocery shopping", xp: 20, xpPercent: 1, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 1 },
+                { id: 'd13', text: "Keep a journal", xp: 30, xpPercent: 1, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { intelligence: 1, sense: 1 }, deadline: '', points: 0 },
+                { id: 'd14', text: "No Sugar", xp: 30, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 2, willpower: 1, sense: 1 }, deadline: '', points: 3 },
+                { id: 'd15', text: "Water only", xp: 30, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 2, willpower: 1, sense: 1 }, deadline: '', points: 2 },
+                { id: 'd16', text: "Organize workspace", xp: 30, xpPercent: 1, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 1 },
+                { id: 'd17', text: "Call mom", xp: 10, xpPercent: 1, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 1 },
+                { id: 'd18', text: "Study 20 minutes", xp: 40, xpPercent: 5, category: 'daily', path: 'all', isOneTime: false, repeatable: true, rewards: { intelligence: 2, focus: 1, sense: 1 }, deadline: '', points: 2 },
+
+                // WEEKLY QUESTS
+                { id: 'w1', text: "Laundry Clothes", xp: 200, xpPercent: 5, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
+                { id: 'w2', text: "Laundry Towels", xp: 200, xpPercent: 5, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
+                { id: 'w3', text: "Laundry Underwear/Socks", xp: 200, xpPercent: 5, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
+                { id: 'w4', text: "Emptying trash cans", xp: 200, xpPercent: 5, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
+                { id: 'w5', text: "Cleaning living room", xp: 1000, xpPercent: 10, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
+                { id: 'w6', text: "Cleaning bedroom", xp: 500, xpPercent: 5, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
+                { id: 'w7', text: "Cleaning bathroom", xp: 500, xpPercent: 5, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
+                { id: 'w8', text: "Cleaning balcony", xp: 500, xpPercent: 5, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
+                { id: 'w9', text: "Cleaning kitchen", xp: 500, xpPercent: 5, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1 }, deadline: '', points: 0 },
+                { id: 'w10', text: "Visiting mom", xp: 50, xpPercent: 1, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 1, willpower: 1 }, deadline: '', points: 0 },
+                { id: 'w11', text: "Financial planning", xp: 300, xpPercent: 3, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { intelligence: 1, sense: 1 }, deadline: '', points: 0 },
+                { id: 'w12', text: "Lose 1 kg", xp: 2000, xpPercent: 20, category: 'weekly', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 2, willpower: 1, sense: 1 }, deadline: '', points: 0 },
+
+                // MONTHLY QUESTS
+            { id: 'm1', text: "Save 500 euro", xp: 100, xpPercent: 5, category: 'monthly', path: 'all', isOneTime: false, repeatable: false, rewards: { sense: 5, willpower: 5, intelligence: 5, ap: 5 }, deadline: '', points: 0 }
         ];
 
         let state = {
@@ -1328,10 +1333,11 @@
                     div.innerHTML = `
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                             <div class="min-w-0 flex-1">
-                                <h3 class="text-base md:text-lg font-black text-white truncate">${q.text}</h3>
+                                <h3 class="text-base md:text-lg font-black text-white truncate">${q._isCustomized ? '<i class="fas fa-wrench text-yellow-500 mr-2" title="Customized"></i>' : ''}${q.text}</h3>
                                 <div class="hidden md:block text-[9px] md:text-[10px] text-slate-400 uppercase tracking-[0.2em] truncate">${q.category.toUpperCase()} • ${q.path.toUpperCase()} • XP ${q.xp} • QP ${q.points || 1}${q.deadline ? ' • DUE ' + q.deadline : ''}</div>
                             </div>
                             <div class="flex items-center gap-2 shrink-0">
+                                ${q._isCustomized ? `<button onclick="resetToDefault('quests','${q.id}')" class="px-3 py-2 bg-yellow-900/20 border border-yellow-800 rounded-xl text-[10px] font-black uppercase tracking-[0.25em] text-yellow-500 transition">RESET</button>` : ''}
                                 <button onclick="toggleQuestDetails('${q.id}')" class="px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-[10px] font-black uppercase tracking-[0.25em] transition">${isExpanded ? 'HIDE' : 'EDIT'}</button>
                                 <button onclick="removeItem('quests','${q.id}')" class="px-3 py-2 bg-red-900/20 border border-red-800 rounded-xl text-[10px] font-black uppercase tracking-[0.25em] text-red-300 transition">DEL</button>
                             </div>
@@ -1438,10 +1444,11 @@
                     div.innerHTML = `
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                             <div class="min-w-0 flex-1">
-                                <h4 class="text-sm md:text-base font-black text-white truncate">${ach.title}</h4>
+                                <h4 class="text-sm md:text-base font-black text-white truncate">${ach._isCustomized ? '<i class="fas fa-wrench text-yellow-500 mr-2" title="Customized"></i>' : ''}${ach.title}</h4>
                                 <div class="text-[9px] md:text-[10px] text-slate-400 uppercase tracking-[0.2em] truncate">${ach.type.toUpperCase()} ${ach.operator} ${ach.value}</div>
                             </div>
                             <div class="flex items-center gap-2 shrink-0">
+                                ${ach._isCustomized ? `<button onclick="resetToDefault('achievements','${ach.id}')" class="px-3 py-2 bg-yellow-900/20 border border-yellow-800 rounded-xl text-[10px] font-black uppercase tracking-[0.25em] text-yellow-500 transition">RESET</button>` : ''}
                                 <button onclick="toggleAchievementDetails('${ach.id}')" class="px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-[10px] font-black uppercase tracking-[0.25em] transition">${isExpanded ? 'HIDE' : 'EDIT'}</button>
                                 <button onclick="removeItem('achievements','${ach.id}')" class="px-3 py-2 bg-red-900/20 border border-red-800 rounded-xl text-[10px] font-black uppercase tracking-[0.25em] text-red-300 transition">DEL</button>
                             </div>
@@ -1530,8 +1537,8 @@
             }
         }
 
-        function updateQuestStatReward(id, stat, val) { const q = state.quests.find(x=>x.id===id); if(!q.rewards) q.rewards = {}; q.rewards[stat] = val; saveSystemData(); renderConfigContent(); renderUI(); }
-        function updateAchStatReward(id, stat, val) { const a = state.achievements.find(x=>x.id===id); if(!a.rewards) a.rewards = {}; a.rewards[stat] = val; saveSystemData(); renderConfigContent(); renderUI(); }
+        function updateQuestStatReward(id, stat, val) { const q = state.quests.find(x=>x.id===id); if(!q.rewards) q.rewards = {}; q.rewards[stat] = val; q._isCustomized = true; saveSystemData(); renderConfigContent(); renderUI(); }
+        function updateAchStatReward(id, stat, val) { const a = state.achievements.find(x=>x.id===id); if(!a.rewards) a.rewards = {}; a.rewards[stat] = val; a._isCustomized = true; saveSystemData(); renderConfigContent(); renderUI(); }
         function updateSystemSetting(key, val) { state.settings[key] = val; saveSystemData(); renderUI(); }
 
         function openRewardModal() {
@@ -1634,7 +1641,8 @@
             const s = localStorage.getItem(STORAGE_KEY); 
             if(s) { 
                 try { 
-                    const parsed = JSON.parse(s); state = {...state, ...parsed}; 
+                    const parsed = JSON.parse(s); state = {...state, ...parsed};
+                    if (Array.isArray(state.quests)) state.quests = state.quests.flat();
                     state.player.ap = Number(state.player.ap) || 0;
                     STATS.forEach(stat => { 
                         if(state.player.stats[stat] === undefined) state.player.stats[stat] = 10;
@@ -1653,20 +1661,36 @@
                     
                     const baseAchievements = generateBaseAchievements();
                     baseAchievements.forEach(baseAch => {
+                        let defHash = JSON.stringify(baseAch);
                         let existingIndex = state.achievements.findIndex(a => a.id === baseAch.id);
                         if (existingIndex !== -1) {
-                            state.achievements[existingIndex] = { ...state.achievements[existingIndex], ...baseAch };
+                            let storedAch = state.achievements[existingIndex];
+                            if (storedAch._codeHash !== defHash) {
+                                if (!storedAch._isCustomized) {
+                                    state.achievements[existingIndex] = { ...storedAch, ...baseAch, _codeHash: defHash };
+                                } else {
+                                    storedAch._codeHash = defHash;
+                                }
+                            }
                         } else if (!state.deletedDefaultIds.includes(baseAch.id)) {
-                            state.achievements.push(baseAch);
+                            state.achievements.push({ ...baseAch, _codeHash: defHash });
                         }
                     });
                     
                     DEFAULT_QUESTS.forEach(defQuest => {
+                        let defHash = JSON.stringify(defQuest);
                         let existingIndex = state.quests.findIndex(q => q.id === defQuest.id);
                         if (existingIndex !== -1) {
-                            state.quests[existingIndex] = { ...state.quests[existingIndex], ...defQuest };
+                            let storedQuest = state.quests[existingIndex];
+                            if (storedQuest._codeHash !== defHash) {
+                                if (!storedQuest._isCustomized) {
+                                    state.quests[existingIndex] = { ...storedQuest, ...defQuest, _codeHash: defHash };
+                                } else {
+                                    storedQuest._codeHash = defHash;
+                                }
+                            }
                         } else if (!state.deletedDefaultIds.includes(defQuest.id)) {
-                            state.quests.push(defQuest);
+                            state.quests.push({ ...defQuest, _codeHash: defHash });
                         }
                     });
                     state.quests.forEach(q => {
@@ -1683,15 +1707,14 @@
         }
         function exportData() { const blob = new Blob([JSON.stringify(state)], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'hunter_archive.json'; a.click(); }
         function importData(i) { const r = new FileReader(); r.onload = e => { state = JSON.parse(e.target.result); saveSystemData(); location.reload(); }; r.readAsText(i.files[0]); }
-        function updateProp(coll, id, pr, val) { state[coll].find(x=>x.id===id)[pr] = val; saveSystemData(); renderUI(); }
-        function removeItem(coll, id) { state[coll] = state[coll].filter(x=>x.id!==id); renderConfigContent(); saveSystemData(); renderUI(); }
+        function updateProp(coll, id, pr, val) { const item = state[coll].find(x=>x.id===id); item[pr] = val; item._isCustomized = true; saveSystemData(); renderUI(); }
         function removeItem(coll, id) { 
             state[coll] = state[coll].filter(x=>x.id!==id); 
             if (!state.deletedDefaultIds) state.deletedDefaultIds = [];
             if (!state.deletedDefaultIds.includes(id)) state.deletedDefaultIds.push(id);
             renderConfigContent(); saveSystemData(); renderUI(); 
         }
-        function addNew(coll) { const id = Date.now().toString(); if(coll==='quests') state.quests.push({id, text:'New Objective', xp:100, xpPercent:0, category:'daily', path:'all', isOneTime:false, repeatable:false, rewards:{ap:1}, deadline:'', points:1}); else if(coll==='achievements') state.achievements.push({id, title:'New Milestone', type:'level', operator:'>=', value:10, rewards:{ap:5}}); else state.trackers.push({id, name:'New Metric', unit:'pts', data:[]}); renderConfigContent(); saveSystemData(); renderUI(); }
+        function addNew(coll) { const id = Date.now().toString(); if(coll==='quests') state.quests.push({id, text:'New Objective', xp:100, xpPercent:0, category:'daily', path:'all', isOneTime:false, repeatable:false, rewards:{ap:1}, deadline:'', points:1, _isCustomized:true}); else if(coll==='achievements') state.achievements.push({id, title:'New Milestone', type:'level', operator:'>=', value:10, rewards:{ap:5}, _isCustomized:true}); else state.trackers.push({id, name:'New Metric', unit:'pts', data:[], _isCustomized:true}); renderConfigContent(); saveSystemData(); renderUI(); }
         function switchConfigTab(t) { currentConfigTab = t; document.querySelectorAll('.config-tab').forEach(x=>x.classList.remove('active')); const tab = document.getElementById('tab-'+t); if(tab) tab.classList.add('active'); renderConfigContent(); }
         function updateQuestSearch(el) { const start = el.selectionStart || 0; const end = el.selectionEnd || start; questConfigSearchText = el.value; renderConfigContent(); requestAnimationFrame(()=>{ const input = document.getElementById('quest-search-input'); if(input){ input.focus(); input.setSelectionRange(start, end); }}); }
         function updateAchievementSearch(el) { const start = el.selectionStart || 0; const end = el.selectionEnd || start; achievementConfigSearchText = el.value; renderConfigContent(); requestAnimationFrame(()=>{ const input = document.getElementById('achievement-search-input'); if(input){ input.focus(); input.setSelectionRange(start, end); }}); }
@@ -1699,6 +1722,20 @@
         function setQuestConfigCategory(category) { questConfigCategory = category; renderConfigContent(); }
         function toggleQuestDetails(id) { if(expandedQuestIds.has(id)) expandedQuestIds.delete(id); else expandedQuestIds.add(id); renderConfigContent(); }
         function toggleAchievementDetails(id) { if(expandedAchievementIds.has(id)) expandedAchievementIds.delete(id); else expandedAchievementIds.add(id); renderConfigContent(); }
+
+        function resetToDefault(coll, id) {
+            const defaultList = coll === 'quests' ? DEFAULT_QUESTS : generateBaseAchievements();
+            const defaultItem = defaultList.find(x => x.id === id);
+            if (defaultItem) {
+                let existingIndex = state[coll].findIndex(x => x.id === id);
+                if (existingIndex !== -1) {
+                    let defHash = JSON.stringify(defaultItem);
+                    state[coll][existingIndex] = { ...defaultItem, _codeHash: defHash };
+                    saveSystemData(); renderConfigContent(); renderUI();
+                    notify("Reset to Default Settings", true);
+                }
+            }
+        }
 
         function openConfigModal() { switchConfigTab(currentConfigTab); const modal = document.getElementById('config-modal'); if(modal) modal.classList.remove('hidden'); }
         function openLog() { renderLog(); const modal = document.getElementById('log-modal'); if(modal) modal.classList.remove('hidden'); }
