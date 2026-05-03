@@ -9,7 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@500;700;800&display=swap');
+        @import url('<https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@500;700;800&display=swap>');
         
         :root {
             --system-blue: #00e5ff;
@@ -223,33 +223,9 @@
             <main id="sec-quests" class="lg:col-span-8 space-y-6">
                 <!-- Tactical Header Ribbon (Only visible on Desktop) -->
                 <div class="hidden lg:grid lg:grid-cols-3 gap-4 items-stretch">
-                    <!-- Path Card -->
-                    <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 md:p-5 rounded-3xl flex items-center justify-between gap-4 shadow-xl group">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-cyan-500/10 p-3 rounded-xl text-cyan-500"><i class="fas fa-calendar-day text-2xl"></i></div>
-                            <div>
-                                <h3 class="font-black text-[10px] uppercase tracking-widest text-slate-500 mb-0.5">PATH</h3>
-                                <p id="current-path-text" class="text-cyan-400 text-lg md:text-2xl font-black uppercase truncate tracking-widest">WORK</p>
-                            </div>
-                        </div>
-                        <button onclick="openPathModal()" class="p-2.5 bg-cyan-900/30 border border-cyan-500/40 text-cyan-400 rounded-xl hover:bg-cyan-500 hover:text-black transition-all"><i class="fas fa-exchange-alt"></i></button>
-                    </div>
-
-                    <!-- Streak Card -->
-                    <div id="streak-card" class="bg-[#111114] border-2 border-[#1e1e24] p-4 md:p-5 rounded-3xl flex items-center justify-between shadow-xl group">
-                        <div class="flex items-center gap-4">
-                            <div id="streak-icon" class="bg-orange-500/10 p-3 rounded-xl text-orange-500"><i class="fas fa-fire text-2xl"></i></div>
-                            <div>
-                                <h3 class="font-black text-[10px] uppercase tracking-widest text-slate-500 mb-0.5">STREAK</h3>
-                                <p id="streak-subtext" class="text-lg md:text-2xl text-slate-400 font-black uppercase leading-tight whitespace-nowrap">Days Clean</p>
-                            </div>
-                        </div>
-                        <p id="streak-text" class="text-orange-500 text-5xl md:text-6xl font-black system-font leading-none mr-3">0</p>
-                    </div>
-
                     <!-- Action Hub -->
-                    <div class="bg-[#111114] border-2 border-[#1e1e24] p-3 rounded-3xl shadow-2xl flex flex-col justify-center">
-                        <div class="grid grid-cols-2 gap-2 h-full">
+                    <div class="bg-[#111114] border-2 border-[#1e1e24] p-3 rounded-3xl shadow-2xl flex flex-col justify-center lg:col-span-2">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 h-full">
                             <button onclick="openLog()" class="action-button"><i class="fas fa-list-ul text-cyan-500"></i> Records</button>
                             <button onclick="openAchievementGallery()" class="action-button"><i class="fas fa-trophy text-yellow-500"></i> Hall</button>
                             <button onclick="openCalendarModal()" class="action-button"><i class="fas fa-calendar-alt text-purple-400"></i> Dates</button>
@@ -259,6 +235,36 @@
                             <button onclick="exportData()" class="action-button"><i class="fas fa-file-export text-slate-400"></i> Export</button>
                             <button onclick="document.getElementById('importFile').click()" class="action-button"><i class="fas fa-file-import text-slate-400"></i> Import</button>
                             <input type="file" id="importFile" class="hidden" onchange="importData(this)">
+                        </div>
+                    </div>
+
+                    <!-- Combined Path & Streak Card -->
+                    <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 md:p-5 rounded-3xl flex flex-col justify-center gap-4 shadow-xl">
+                        <!-- Path Row -->
+                        <div class="flex items-center justify-between group">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-cyan-500/10 p-2.5 rounded-xl text-cyan-500"><i class="fas fa-calendar-day text-xl"></i></div>
+                                <div>
+                                    <h3 class="font-black text-[10px] uppercase tracking-widest text-slate-500 mb-0.5">PATH</h3>
+                                    <p id="current-path-text" class="text-cyan-400 text-lg font-black uppercase truncate tracking-widest leading-none">WORK</p>
+                                </div>
+                            </div>
+                            <button onclick="openPathModal()" class="p-2 bg-cyan-900/30 border border-cyan-500/40 text-cyan-400 rounded-lg hover:bg-cyan-500 hover:text-black transition-all"><i class="fas fa-exchange-alt"></i></button>
+                        </div>
+                        
+                        <!-- Divider -->
+                        <div class="w-full h-[2px] bg-[#1e1e24] rounded-full"></div>
+
+                        <!-- Streak Row -->
+                        <div id="streak-card" class="flex items-center justify-between group">
+                            <div class="flex items-center gap-3">
+                                <div id="streak-icon" class="bg-orange-500/10 p-2.5 rounded-xl text-orange-500"><i class="fas fa-fire text-xl"></i></div>
+                                <div>
+                                    <h3 class="font-black text-[10px] uppercase tracking-widest text-slate-500 mb-0.5">STREAK</h3>
+                                    <p id="streak-subtext" class="text-lg md:text-2xl text-slate-400 font-black uppercase leading-tight whitespace-nowrap">Days Clean</p>
+                                </div>
+                            </div>
+                            <p id="streak-text" class="text-orange-500 text-5xl font-black system-font leading-none mr-1">0</p>
                         </div>
                     </div>
                 </div>
@@ -296,33 +302,39 @@
 
             <!-- Mobile Only: Terminal Tab (Path, Streak, Action Hub) -->
             <aside id="sec-terminal" class="hidden space-y-6 flex flex-col">
-                <div class="grid grid-cols-1 gap-4">
-                    <!-- Path Card (Mobile version) -->
-                    <div class="bg-[#111114] border-2 border-[#1e1e24] p-5 rounded-3xl flex items-center justify-between gap-4 shadow-xl">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-cyan-500/10 p-3 rounded-xl text-cyan-500"><i class="fas fa-calendar-day text-2xl"></i></div>
-                            <div>
-                                <h3 class="font-black text-[10px] uppercase tracking-widest text-slate-500 mb-0.5">PATH</h3>
-                                <p id="current-path-text-mobile" class="text-cyan-400 text-2xl font-black uppercase tracking-widest">WORK</p>
+                <div class="space-y-4">
+                    <!-- Combined Path & Streak Card (Mobile) -->
+                    <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-3xl flex flex-col justify-center gap-4 shadow-xl">
+                        <!-- Path Row -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-cyan-500/10 p-3 rounded-xl text-cyan-500"><i class="fas fa-calendar-day text-xl"></i></div>
+                                <div>
+                                    <h3 class="font-black text-[10px] uppercase tracking-widest text-slate-500 mb-0.5">PATH</h3>
+                                    <p id="current-path-text-mobile" class="text-cyan-400 text-xl font-black uppercase tracking-widest leading-none">WORK</p>
+                                </div>
                             </div>
+                            <button onclick="openPathModal()" class="p-2.5 bg-cyan-900/30 border border-cyan-500/40 text-cyan-400 rounded-xl"><i class="fas fa-exchange-alt"></i></button>
                         </div>
-                        <button onclick="openPathModal()" class="p-3 bg-cyan-900/30 border border-cyan-500/40 text-cyan-400 rounded-xl"><i class="fas fa-exchange-alt"></i></button>
+                        
+                        <!-- Divider -->
+                        <div class="w-full h-[2px] bg-[#1e1e24] rounded-full"></div>
+
+                        <!-- Streak Row -->
+                        <div id="streak-card-mobile" class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div id="streak-icon-mobile" class="bg-orange-500/10 p-3 rounded-xl text-orange-500"><i class="fas fa-fire text-xl"></i></div>
+                                <div>
+                                    <h3 class="font-black text-[10px] uppercase tracking-widest text-slate-500 mb-0.5">STREAK</h3>
+                                    <p id="streak-subtext-mobile" class="text-[10px] text-slate-400 font-black uppercase leading-tight">Days Clean</p>
+                                </div>
+                            </div>
+                            <p id="streak-text-mobile" class="text-orange-500 text-4xl font-black system-font leading-none mr-2">0</p>
+                        </div>
                     </div>
 
-                    <!-- Streak Card (Mobile version) -->
-                    <div id="streak-card-mobile" class="bg-[#111114] border-2 border-[#1e1e24] p-5 rounded-3xl flex items-center justify-between shadow-xl">
-                        <div class="flex items-center gap-4">
-                            <div id="streak-icon-mobile" class="bg-orange-500/10 p-3 rounded-xl text-orange-500"><i class="fas fa-fire text-2xl"></i></div>
-                            <div>
-                                <h3 class="font-black text-[10px] uppercase tracking-widest text-slate-500 mb-0.5">STREAK</h3>
-                                <p id="streak-subtext-mobile" class="text-[10px] text-slate-400 font-black uppercase leading-tight">Days Clean</p>
-                            </div>
-                        </div>
-                        <p id="streak-text-mobile" class="text-orange-500 text-6xl font-black system-font leading-none mr-3">0</p>
-                    </div>
-
-                    <!-- Action Hub (Mobile version) -->
-                    <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-3xl shadow-2xl">
+                     <!-- Action Hub (Mobile version) -->
+                     <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-3xl shadow-2xl">
                         <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4 ml-2">System Functions</h3>
                         <div class="grid grid-cols-2 gap-3">
                             <button onclick="openLog()" class="action-button"><i class="fas fa-list-ul text-cyan-500"></i> Records</button>
@@ -335,7 +347,7 @@
                             <button onclick="document.getElementById('importFileMobile').click()" class="action-button"><i class="fas fa-file-import text-slate-400"></i> Import</button>
                             <input type="file" id="importFileMobile" class="hidden" onchange="importData(this)">
                         </div>
-                    </div>
+                     </div>
                 </div>
             </aside>
         </div>
@@ -1134,34 +1146,38 @@
             const streakTextColor = failureMode ? 'text-red-500' : 'text-orange-500';
             const streakIcon = failureMode ? 'fa-exclamation-triangle' : 'fa-fire';
             const streakIconBg = failureMode ? 'bg-red-500/10 text-red-500' : 'bg-orange-500/10 text-orange-500';
-            const streakSubText = document.getElementById('streak-subtext');
-            const streakSubTextMob = document.getElementById('streak-subtext-mobile');
-            const streakIconEl = document.getElementById('streak-icon');
-            const streakIconMobEl = document.getElementById('streak-icon-mobile');
+            
+            // Desktop Streak
             const streakDisp = document.getElementById('streak-text');
-            const streakDispMob = document.getElementById('streak-text-mobile');
-
             if (streakDisp) {
                 streakDisp.innerText = streakCount;
                 streakDisp.classList.toggle('text-orange-500', !failureMode);
                 streakDisp.classList.toggle('text-red-500', failureMode);
             }
+            const streakSubText = document.getElementById('streak-subtext');
+            if (streakSubText) streakSubText.innerText = streakLabelText;
+            const streakIconEl = document.getElementById('streak-icon');
+            if (streakIconEl) {
+                streakIconEl.className = `${streakIconBg} p-2.5 rounded-xl ${streakIcon === 'fa-fire' ? 'text-orange-500' : 'text-red-500'}`;
+                streakIconEl.innerHTML = `<i class="fas ${streakIcon} text-xl"></i>`;
+            }
+
+            // Mobile Streak
+            const streakDispMob = document.getElementById('streak-text-mobile');
             if (streakDispMob) {
                 streakDispMob.innerText = streakCount;
                 streakDispMob.classList.toggle('text-orange-500', !failureMode);
                 streakDispMob.classList.toggle('text-red-500', failureMode);
             }
-            if (streakSubText) streakSubText.innerText = streakLabelText;
+            const streakSubTextMob = document.getElementById('streak-subtext-mobile');
             if (streakSubTextMob) streakSubTextMob.innerText = streakLabelText;
-            if (streakIconEl) {
-                streakIconEl.className = `${streakIconBg} p-3 rounded-xl ${streakIcon === 'fa-fire' ? 'text-orange-500' : 'text-red-500'}`;
-                streakIconEl.innerHTML = `<i class="fas ${streakIcon} text-2xl"></i>`;
-            }
+            const streakIconMobEl = document.getElementById('streak-icon-mobile');
             if (streakIconMobEl) {
                 streakIconMobEl.className = `${streakIconBg} p-3 rounded-xl ${streakIcon === 'fa-fire' ? 'text-orange-500' : 'text-red-500'}`;
-                streakIconMobEl.innerHTML = `<i class="fas ${streakIcon} text-2xl"></i>`;
+                streakIconMobEl.innerHTML = `<i class="fas ${streakIcon} text-xl"></i>`;
             }
             
+            // Path
             const pathDisp = document.getElementById('current-path-text'); if(pathDisp) pathDisp.innerText = state.currentPath.toUpperCase();
             const pathDispMob = document.getElementById('current-path-text-mobile'); if(pathDispMob) pathDispMob.innerText = state.currentPath.toUpperCase();
             
@@ -1597,7 +1613,23 @@
             const modal = document.getElementById('calendar-modal'); if(modal) modal.classList.remove('hidden');
         }
 
-        function saveSystemData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+        function saveSystemData() { 
+            // Cap logs at 500 to prevent local storage from filling up and crashing
+            if (state.logs && state.logs.length > 500) {
+                state.logs = state.logs.slice(0, 500);
+            }
+            
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); 
+            } catch (e) {
+                if (e.name === 'QuotaExceededError') {
+                    console.error("Local Storage is completely full!");
+                    // Optional: fallback if it's still too big even after capping logs
+                    state.logs = state.logs.slice(0, 100); 
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                }
+            }
+        }
         function loadSystemData() { 
             const s = localStorage.getItem(STORAGE_KEY); 
             if(s) { 
