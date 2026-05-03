@@ -1782,7 +1782,7 @@
         }
 
         let html5QrcodeScanner = null;
-        let battleState = { role: '', p1: null, p2: null, chosen: [], myCode: '' };
+        let battleState = { role: '', battleId: '', p1: null, p2: null, chosen: [], myCode: '' };
 
         function openBattleModal() {
             document.getElementById('battle-menu').classList.remove('hidden');
@@ -1825,42 +1825,46 @@
             try {
                 let decodedText = decodeURIComponent(atob(encodedText));
                 if (battleState.role === 'host' && decodedText.startsWith("G|")) {
-                    if (html5QrcodeScanner) { html5QrcodeScanner.stop().catch(()=>{}); html5QrcodeScanner = null; }
-                    let parts = decodedText.split('|');
-                    if (parts.length >= 4) {
-                        battleState.p2 = { id: parts[1], name: parts[2], stats: parts[3].split(',').map(Number) };
-                    } else {
-                        battleState.p2 = { id: parts[1], name: parts[1], stats: parts[2].split(',').map(Number) };
-                    }
-                    startBattleSequence();
-                } else if (battleState.role === 'guest' && decodedText.startsWith("H|")) {
-                    if (html5QrcodeScanner) { html5QrcodeScanner.stop().catch(()=>{}); html5QrcodeScanner = null; }
-                    
                     let parts = decodedText.split('|');
                     if (parts.length >= 5) {
-                        battleState.p1 = { id: parts[1], name: parts[2], stats: parts[3].split(',').map(Number) };
-                        battleState.chosen = parts[4].split(',').map(Number);
+                        if (parts[1] !== battleState.battleId) {
+                            notify("Invalid or expired Battle Code!");
+                            return;
+                        }
+                        if (html5QrcodeScanner) { html5QrcodeScanner.stop().catch(()=>{}); html5QrcodeScanner = null; }
+                        battleState.p2 = { id: parts[2], name: parts[3], stats: parts[4].split(',').map(Number) };
+                        startBattleSequence();
                     } else {
-                        battleState.p1 = { id: parts[1], name: parts[1], stats: parts[2].split(',').map(Number) };
-                        battleState.chosen = parts[3].split(',').map(Number);
+                        notify("Invalid or outdated Battle Code format!");
                     }
-                    
-                    let myStatsArr = STATS.map(s => state.player.stats[s] || 0);
-                    battleState.p2 = { id: state.player.id, name: state.player.name, stats: myStatsArr };
-                    
-                    let rawGuest = `G|${state.player.id}|${state.player.name}|${myStatsArr.join(',')}`;
-                    let guestPayload = btoa(encodeURIComponent(rawGuest));
-                    battleState.myCode = guestPayload;
-                    
-                    document.getElementById('scanner-container').classList.add('hidden');
-                    document.getElementById('manual-code-container').classList.add('hidden');
-                    
-                    document.getElementById('qr-container').classList.remove('hidden');
-                    document.getElementById('copy-code-btn').classList.remove('hidden');
-                    new QRious({ element: document.getElementById('battle-qr'), value: guestPayload, size: 220, background: '#ffffff', foreground: '#000000' });
-                    
-                    document.getElementById('battle-connect-title').innerText = "Match Found! Let Host scan/enter your code.";
-                    document.getElementById('guest-start-btn').classList.remove('hidden');
+                } else if (battleState.role === 'guest' && decodedText.startsWith("H|")) {
+                    let parts = decodedText.split('|');
+                    if (parts.length >= 6) {
+                        if (html5QrcodeScanner) { html5QrcodeScanner.stop().catch(()=>{}); html5QrcodeScanner = null; }
+                        
+                        battleState.battleId = parts[1];
+                        battleState.p1 = { id: parts[2], name: parts[3], stats: parts[4].split(',').map(Number) };
+                        battleState.chosen = parts[5].split(',').map(Number);
+                        
+                        let myStatsArr = STATS.map(s => state.player.stats[s] || 0);
+                        battleState.p2 = { id: state.player.id, name: state.player.name, stats: myStatsArr };
+                        
+                        let rawGuest = `G|${battleState.battleId}|${state.player.id}|${state.player.name}|${myStatsArr.join(',')}`;
+                        let guestPayload = btoa(encodeURIComponent(rawGuest));
+                        battleState.myCode = guestPayload;
+                        
+                        document.getElementById('scanner-container').classList.add('hidden');
+                        document.getElementById('manual-code-container').classList.add('hidden');
+                        
+                        document.getElementById('qr-container').classList.remove('hidden');
+                        document.getElementById('copy-code-btn').classList.remove('hidden');
+                        new QRious({ element: document.getElementById('battle-qr'), value: guestPayload, size: 220, background: '#ffffff', foreground: '#000000' });
+                        
+                        document.getElementById('battle-connect-title').innerText = "Match Found! Let Host scan/enter your code.";
+                        document.getElementById('guest-start-btn').classList.remove('hidden');
+                    } else {
+                        notify("Invalid or outdated Battle Code format!");
+                    }
                 }
             } catch(e) {
                 notify("Invalid Battle Code!");
@@ -1869,6 +1873,7 @@
 
         function startHostBattle() {
             battleState.role = 'host';
+            battleState.battleId = 'B_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
             document.getElementById('battle-menu').classList.add('hidden');
             document.getElementById('battle-connect').classList.remove('hidden');
             document.getElementById('copy-code-btn').classList.remove('hidden');
@@ -1884,7 +1889,7 @@
             let myStatsArr = STATS.map(s => state.player.stats[s] || 0);
             battleState.p1 = { id: state.player.id, name: state.player.name, stats: myStatsArr };
             
-            let rawHost = `H|${state.player.id}|${state.player.name}|${myStatsArr.join(',')}|${battleState.chosen.join(',')}`;
+            let rawHost = `H|${battleState.battleId}|${state.player.id}|${state.player.name}|${myStatsArr.join(',')}|${battleState.chosen.join(',')}`;
             let hostPayload = btoa(encodeURIComponent(rawHost));
             battleState.myCode = hostPayload;
             
@@ -1901,33 +1906,7 @@
             document.getElementById('battle-connect-title').innerText = "Scan Host's QR Code...";
             document.getElementById('qr-container').classList.add('hidden');
 
-            // Guest scans for Host's initial QR
-            initScanner((decodedText) => {
-                if (decodedText.startsWith("H|")) {
-                    if (html5QrcodeScanner) { html5QrcodeScanner.stop().catch(()=>{}); html5QrcodeScanner = null; }
-                    
-                    let parts = decodedText.split('|');
-                    if (parts.length >= 5) {
-                        battleState.p1 = { id: parts[1], name: parts[2], stats: parts[3].split(',').map(Number) };
-                        battleState.chosen = parts[4].split(',').map(Number);
-                    } else {
-                        battleState.p1 = { id: parts[1], name: parts[1], stats: parts[2].split(',').map(Number) };
-                        battleState.chosen = parts[3].split(',').map(Number);
-                    }
-                    
-                    let myStatsArr = STATS.map(s => state.player.stats[s] || 0);
-                    battleState.p2 = { id: state.player.id, name: state.player.name, stats: myStatsArr };
-                    
-                    // Guest generates response QR
-                    let guestPayload = btoa(encodeURIComponent(`G|${state.player.id}|${state.player.name}|${myStatsArr.join(',')}`));
-                    document.getElementById('scanner-container').classList.add('hidden');
-                    document.getElementById('qr-container').classList.remove('hidden');
-                    new QRious({ element: document.getElementById('battle-qr'), value: guestPayload, size: 220, background: '#ffffff', foreground: '#000000' });
-                    
-                    document.getElementById('battle-connect-title').innerText = "Match Found! Let Host scan your QR.";
-                    document.getElementById('guest-start-btn').classList.remove('hidden');
-                }
-            });
+            initScanner();
         }
 
         async function startBattleSequence() {
@@ -2009,15 +1988,7 @@
             else { winnerText.innerText = "DRAW!"; winnerText.className = "text-4xl font-black italic uppercase tracking-tighter mb-2 text-yellow-400"; }
 
             document.getElementById('arena-result').classList.remove('hidden');
-            
-            // Log stats into tracker
-            let winTracker = state.trackers.find(t => t.id === 'win_rate');
-            if (!winTracker) { winTracker = {id: 'win_rate', name: 'Co-op Battles Won', unit: 'Wins', data: []}; state.trackers.push(winTracker); }
-            if (iWon) {
-                let currentWins = winTracker.data.length ? winTracker.data[winTracker.data.length-1].value : 0;
-                winTracker.data.push({date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), value: currentWins + 1});
-                saveSystemData(); renderUI();
-            }
+            saveSystemData(); renderUI(); checkAchievements();
         }
 
         function switchStatsTab(tab) {
@@ -2136,5 +2107,4 @@
         window.onload = init;
     </script>
 </body>
-</html>
 </html>
