@@ -68,7 +68,7 @@
         }
         .stat-card:hover { border-color: rgba(0, 229, 255, 0.4); transform: translateY(-2px); }
 
-        .config-tab.active { border-bottom: 4px solid var(--system-blue); color: var(--system-blue); font-weight: 900; }
+        .config-tab.active, .stats-tab.active { border-bottom: 4px solid var(--system-blue); color: var(--system-blue); font-weight: 900; }
 
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
         @media (min-width: 768px) { .calendar-grid { gap: 8px; } }
@@ -241,7 +241,7 @@
                             <div id="streak-icon" class="bg-orange-500/10 p-3 rounded-xl text-orange-500"><i class="fas fa-fire text-2xl"></i></div>
                             <div>
                                 <h3 class="font-black text-[10px] uppercase tracking-widest text-slate-500 mb-0.5">STREAK</h3>
-                                <p id="streak-subtext" class="text-[10px] text-slate-400 font-black uppercase leading-tight whitespace-nowrap">Days Clean</p>
+                                <p id="streak-subtext" class="text-lg md:text-2xl text-slate-400 font-black uppercase leading-tight whitespace-nowrap">Days Clean</p>
                             </div>
                         </div>
                         <p id="streak-text" class="text-orange-500 text-5xl md:text-6xl font-black system-font leading-none mr-3">0</p>
@@ -254,10 +254,10 @@
                             <button onclick="openAchievementGallery()" class="action-button"><i class="fas fa-trophy text-yellow-500"></i> Hall</button>
                             <button onclick="openCalendarModal()" class="action-button"><i class="fas fa-calendar-alt text-purple-400"></i> Dates</button>
                             <button onclick="openConfigModal()" class="action-button"><i class="fas fa-cog text-cyan-500"></i> Config</button>
+                            <button onclick="openBattleModal()" class="action-button"><i class="fas fa-khanda text-red-500"></i> Battle</button>
+                            <button onclick="openStatsModal()" class="action-button"><i class="fas fa-chart-pie text-blue-500"></i> Stats</button>
                             <button onclick="exportData()" class="action-button"><i class="fas fa-file-export text-slate-400"></i> Export</button>
                             <button onclick="document.getElementById('importFile').click()" class="action-button"><i class="fas fa-file-import text-slate-400"></i> Import</button>
-                            <button onclick="openBattleModal()" class="action-button"><i class="fas fa-khanda text-red-500"></i> Battle</button>
-                            <button onclick="openBattleStatsModal()" class="action-button"><i class="fas fa-chart-pie text-blue-500"></i> Stats</button>
                             <input type="file" id="importFile" class="hidden" onchange="importData(this)">
                         </div>
                     </div>
@@ -329,10 +329,10 @@
                             <button onclick="openAchievementGallery()" class="action-button"><i class="fas fa-trophy text-yellow-500"></i> Hall</button>
                             <button onclick="openCalendarModal()" class="action-button"><i class="fas fa-calendar-alt text-purple-400"></i> Dates</button>
                             <button onclick="openConfigModal()" class="action-button"><i class="fas fa-cog text-cyan-500"></i> Config</button>
+                            <button onclick="openBattleModal()" class="action-button"><i class="fas fa-khanda text-red-500"></i> Battle</button>
+                            <button onclick="openStatsModal()" class="action-button"><i class="fas fa-chart-pie text-blue-500"></i> Stats</button>
                             <button onclick="exportData()" class="action-button"><i class="fas fa-file-export text-slate-400"></i> Export</button>
                             <button onclick="document.getElementById('importFileMobile').click()" class="action-button"><i class="fas fa-file-import text-slate-400"></i> Import</button>
-                            <button onclick="openBattleModal()" class="action-button"><i class="fas fa-khanda text-red-500"></i> Battle</button>
-                            <button onclick="openBattleStatsModal()" class="action-button"><i class="fas fa-chart-pie text-blue-500"></i> Stats</button>
                             <input type="file" id="importFileMobile" class="hidden" onchange="importData(this)">
                         </div>
                     </div>
@@ -449,6 +449,7 @@
                     <option value="monthly">MONTHLY</option>
                     <option value="dated">DATED</option>
                     <option value="battle">BATTLES</option>
+                    <option value="penalty">PENALTIES</option>
                 </select>
             </div>
             <div id="log-container" class="flex-1 overflow-y-auto space-y-3 pr-4"></div>
@@ -506,36 +507,114 @@
         </div>
     </div>
 
-    <!-- Battle Stats Modal -->
-    <div id="battle-stats-modal" class="fixed inset-0 z-[600] hidden flex items-center justify-center p-4 modal-bg">
-        <div class="bg-[#0f0f12] border-2 border-cyan-500 w-full max-w-2xl rounded-[40px] p-8 shadow-[0_0_40px_rgba(0,229,255,0.3)] flex flex-col max-h-[95vh] overflow-hidden">
-            <div class="w-full flex justify-between items-center mb-6 border-b-2 border-white/5 pb-4">
-                <h2 class="text-3xl font-black italic text-cyan-400 uppercase tracking-tighter">Combat Statistics</h2>
-                <button onclick="closeModals()" class="text-slate-500 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+    <!-- Stats Modal -->
+    <div id="stats-modal" class="fixed inset-0 z-[600] hidden flex items-center justify-center p-4 modal-bg">
+        <div class="bg-[#0f0f12] border-2 border-cyan-500 w-full max-w-2xl rounded-[40px] p-6 md:p-8 shadow-[0_0_40px_rgba(0,229,255,0.3)] flex flex-col max-h-[95vh] overflow-hidden relative">
+            <div class="w-full flex flex-col justify-between items-start mb-6 border-b-2 border-white/5 pb-4 gap-4">
+                <div class="flex justify-between items-center w-full">
+                    <h2 class="text-2xl md:text-3xl font-black italic text-cyan-400 uppercase tracking-tighter">System Statistics</h2>
+                    <button onclick="closeModals()" class="text-slate-500 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+                </div>
+                <div class="flex gap-4 md:gap-8 w-full">
+                    <button onclick="switchStatsTab('general')" id="tab-stats-general" class="stats-tab active font-black text-[10px] md:text-sm lg:text-base uppercase py-2">General</button>
+                    <button onclick="switchStatsTab('combat')" id="tab-stats-combat" class="stats-tab font-black text-[10px] md:text-sm lg:text-base uppercase py-2">Combat</button>
+                </div>
             </div>
             
             <div class="flex-1 overflow-y-auto pr-2 space-y-6 custom-scrollbar">
-                <!-- Total Stats -->
-                <div class="bg-[#111114] border-2 border-[#1e1e24] p-6 rounded-3xl flex justify-around text-center shadow-xl">
-                    <div>
-                        <p class="text-sm font-black text-slate-500 uppercase tracking-widest mb-1">Total Wins</p>
-                        <p id="stats-total-wins" class="text-4xl font-black text-green-400 system-font">0</p>
+                
+                <!-- General Stats Container -->
+                <div id="stats-general-container" class="space-y-6">
+                    <h3 class="text-sm font-black text-slate-400 uppercase tracking-[0.2em] pl-2">Hunter Profile</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center items-center overflow-hidden">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Account Started</p>
+                            <p id="stats-gen-started" class="text-base md:text-1xl font-black text-cyan-400 system-font text-center w-full break-words">--</p>
+                        </div>
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Total Quests</p>
+                            <p id="stats-gen-total" class="text-xl md:text-3xl font-black text-white system-font">0</p>
+                        </div>
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Total QP</p>
+                            <p id="stats-gen-qp" class="text-xl md:text-3xl font-black text-white system-font">0</p>
+                        </div>
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Total AP</p>
+                            <p id="stats-gen-ap" class="text-xl md:text-3xl font-black text-white system-font">0</p>
+                        </div>
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Achievements</p>
+                            <p id="stats-gen-achievements" class="text-xl md:text-3xl font-black text-yellow-500 system-font">0</p>
+                        </div>
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Battles</p>
+                            <p id="stats-gen-battles" class="text-xl md:text-3xl font-black text-red-500 system-font">0</p>
+                        </div>
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">High Streak</p>
+                            <p id="stats-gen-h-streak" class="text-xl md:text-3xl font-black text-orange-500 system-font">0</p>
+                        </div>
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Max Penalty</p>
+                            <p id="stats-gen-h-nonstreak" class="text-xl md:text-3xl font-black text-red-600 system-font">0</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-sm font-black text-slate-500 uppercase tracking-widest mb-1">Total Draws</p>
-                        <p id="stats-total-draws" class="text-4xl font-black text-yellow-400 system-font">0</p>
+
+                    <h3 class="text-sm font-black text-slate-400 uppercase tracking-[0.2em] pl-2 mt-6">Objective Clears</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Daily</p>
+                            <p id="stats-gen-daily" class="text-xl md:text-3xl font-black text-cyan-400 system-font">0</p>
+                        </div>
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Weekly</p>
+                            <p id="stats-gen-weekly" class="text-xl md:text-3xl font-black text-yellow-400 system-font">0</p>
+                        </div>
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Monthly</p>
+                            <p id="stats-gen-monthly" class="text-xl md:text-3xl font-black text-purple-400 system-font">0</p>
+                        </div>
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Dated</p>
+                            <p id="stats-gen-dated" class="text-xl md:text-3xl font-black text-rose-400 system-font">0</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-sm font-black text-slate-500 uppercase tracking-widest mb-1">Total Losses</p>
-                        <p id="stats-total-losses" class="text-4xl font-black text-red-500 system-font">0</p>
+
+                    <h3 class="text-sm font-black text-slate-400 uppercase tracking-[0.2em] pl-2 mt-6">Path Masteries</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Work</p>
+                            <p id="stats-gen-path-work" class="text-xl md:text-3xl font-black text-emerald-400 system-font">0</p>
+                        </div>
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Free</p>
+                            <p id="stats-gen-path-free" class="text-xl md:text-3xl font-black text-sky-400 system-font">0</p>
+                        </div>
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Event</p>
+                            <p id="stats-gen-path-event" class="text-xl md:text-3xl font-black text-amber-400 system-font">0</p>
+                        </div>
+                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
+                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Base (All)</p>
+                            <p id="stats-gen-path-all" class="text-xl md:text-3xl font-black text-slate-300 system-font">0</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Player List -->
-                <div>
-                    <h3 class="text-sm font-black text-slate-400 uppercase tracking-[0.2em] mb-4 pl-2">Opponent Records</h3>
-                    <div id="stats-players-list" class="space-y-3"></div>
+                <!-- Combat Stats Container -->
+                <div id="stats-combat-container" class="hidden space-y-6">
+                    <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 md:p-6 rounded-3xl flex justify-between gap-2 text-center shadow-xl">
+                        <div class="flex-1 min-w-0"><p class="text-[10px] md:text-sm font-black text-slate-500 uppercase tracking-widest mb-1 truncate">Wins</p><p id="stats-total-wins" class="text-2xl md:text-4xl font-black text-green-400 system-font">0</p></div>
+                        <div class="flex-1 min-w-0"><p class="text-[10px] md:text-sm font-black text-slate-500 uppercase tracking-widest mb-1 truncate">Draws</p><p id="stats-total-draws" class="text-2xl md:text-4xl font-black text-yellow-400 system-font">0</p></div>
+                        <div class="flex-1 min-w-0"><p class="text-[10px] md:text-sm font-black text-slate-500 uppercase tracking-widest mb-1 truncate">Losses</p><p id="stats-total-losses" class="text-2xl md:text-4xl font-black text-red-500 system-font">0</p></div>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-black text-slate-400 uppercase tracking-[0.2em] mb-4 pl-2">Opponent Records</h3>
+                        <div id="stats-players-list" class="space-y-3"></div>
+                    </div>
                 </div>
+                
             </div>
         </div>
     </div>
@@ -545,6 +624,7 @@
 
     <script>
         const STATS = ['strength', 'intelligence', 'agility', 'vitality', 'sense', 'willpower', 'focus', 'instinct'];
+        const STORAGE_KEY = 'solo_leveling_' + window.location.pathname.replace(/[^a-zA-Z0-9]/g, '_');
         
         const generateBaseAchievements = () => {
             const list = [];
@@ -600,9 +680,11 @@
 
         let state = {
             player: { 
-                name: "Player", level: 1, rank: "F", xp: 0, requiredXp: 100, streak: 0, nonCompletionStreak: 0, ap: 0, 
+                id: 'P_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                name: "Player", level: 1, rank: "F", xp: 0, requiredXp: 100, streak: 0, highestStreak: 0, nonCompletionStreak: 0, highestNonCompletionStreak: 0, ap: 0, 
                 stats: { strength: 10, intelligence: 10, agility: 10, vitality: 10, sense: 10, willpower: 10, focus: 10, instinct: 10 } 
             },
+            accountCreated: new Date().toLocaleDateString(),
             quests: [...DEFAULT_QUESTS],
             trackers: [{ id: 't1', name: 'Body Weight', unit: 'kg', data: [] }],
             achievements: generateBaseAchievements(),
@@ -661,13 +743,31 @@
                 if (state.lastDailyReset !== null) {
                     if ((state.thresholdsClearedToday || 0) < 1) {
                         state.player.nonCompletionStreak = (state.player.nonCompletionStreak || 0) + 1;
+                        if (state.player.nonCompletionStreak > (state.player.highestNonCompletionStreak || 0)) {
+                            state.player.highestNonCompletionStreak = state.player.nonCompletionStreak;
+                        }
+                        
                         state.player.streak = 0;
                         state.lastStreakDate = null;
+                        let penalties = {};
                         for (let i = 0; i < state.player.nonCompletionStreak; i++) {
                             const stat = STATS[Math.floor(Math.random() * STATS.length)];
                             state.player.stats[stat] = (state.player.stats[stat] || 0) - 1;
+                            penalties[stat] = (penalties[stat] || 0) - 1;
                         }
                         state.player.ap = (state.player.ap || 0) - 1;
+                        penalties['ap'] = -1;
+                        state.logs.unshift({
+                            questId: `penalty_${Date.now()}`,
+                            date: new Date().toLocaleDateString(),
+                            time: new Date().toLocaleTimeString(),
+                            text: `Penalty for missing daily goal (Streak: ${state.player.nonCompletionStreak})`,
+                            category: 'penalty',
+                            xp: 0,
+                            rewards: penalties,
+                            points: 0,
+                            repeatable: false
+                        });
                         notify(`DAILY GOAL MISSED: non-completion streak ${state.player.nonCompletionStreak}. -1 AP, -${state.player.nonCompletionStreak} random stats.`);
                     } else {
                         if (state.player.nonCompletionStreak > 0) state.player.nonCompletionStreak = 0;
@@ -809,7 +909,10 @@
                                 state.player.streak--;
                                 if(state.player.streak < 0) state.player.streak = 0;
                                 state.lastStreakDate = null;
-                                const todayStr = new Date().toLocaleDateString();
+                                if (state.player.previousNonCompletionStreak !== undefined) {
+                                    state.player.nonCompletionStreak = state.player.previousNonCompletionStreak;
+                                }
+                                const todayStr = new Date().toDateString();
                                 state.logs = state.logs.filter(l => !(l.category === 'path_goal' && l.date === todayStr));
                                 notify("DAILY GOAL UNMET: Streak & rewards retracted.");
                             } else {
@@ -926,8 +1029,12 @@
                     if (state.thresholdsClearedToday === 1) {
                         const today = new Date().toDateString();
                         if (state.lastStreakDate !== today) {
+                            state.player.previousNonCompletionStreak = state.player.nonCompletionStreak || 0;
                             state.player.nonCompletionStreak = 0;
                             state.player.streak++;
+                            if (state.player.streak > (state.player.highestStreak || 0)) {
+                                state.player.highestStreak = state.player.streak;
+                            }
                             state.lastStreakDate = today;
                             state.logs.unshift({
                                 questId: `path_goal_${state.currentPath || 'all'}_${today}`,
@@ -1384,7 +1491,7 @@
         function performSystemReset() {
             const input = document.getElementById('reset-type-input').value;
             if (input.toUpperCase() === 'RESET') {
-                localStorage.removeItem('solo_leveling_system');
+                localStorage.removeItem(STORAGE_KEY);
                 location.reload();
             } else {
                 notify("RESET FAILED: Authentication string incorrect.");
@@ -1474,9 +1581,9 @@
             const modal = document.getElementById('calendar-modal'); if(modal) modal.classList.remove('hidden');
         }
 
-        function saveSystemData() { localStorage.setItem('solo_leveling_system', JSON.stringify(state)); }
+        function saveSystemData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
         function loadSystemData() { 
-            const s = localStorage.getItem('solo_leveling_system'); 
+            const s = localStorage.getItem(STORAGE_KEY); 
             if(s) { 
                 try { 
                     const parsed = JSON.parse(s); state = {...state, ...parsed}; 
@@ -1489,7 +1596,11 @@
                     if(state.dailyPoints === undefined) state.dailyPoints = 0;
                     if(state.thresholdsClearedToday === undefined) state.thresholdsClearedToday = 0;
                     if(state.player.nonCompletionStreak === undefined) state.player.nonCompletionStreak = 0;
+                    if(state.player.highestStreak === undefined) state.player.highestStreak = state.player.streak || 0;
+                    if(state.player.highestNonCompletionStreak === undefined) state.player.highestNonCompletionStreak = state.player.nonCompletionStreak || 0;
+                    if(!state.accountCreated) state.accountCreated = state.logs.length > 0 ? state.logs[state.logs.length - 1].date : new Date().toLocaleDateString();
                     if(!state.battleStats) state.battleStats = { total: { wins: 0, losses: 0, draws: 0 }, players: {} };
+                    if(!state.player.id) state.player.id = 'P_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                     state.quests.forEach(q => {
                         if (q.repeatable === undefined) q.repeatable = false;
                         if (q.isOneTime === undefined) q.isOneTime = false;
@@ -1524,11 +1635,24 @@
             state.logs.filter(x => f === 'all' || x.category === f).forEach(l => {
                 const d = document.createElement('div');
                 d.className = "bg-black/40 border-2 border-white/5 p-4 md:p-6 rounded-[24px] md:rounded-[32px] text-[10px] md:text-sm shadow-2xl";
+                
+                let infoDisplay = '';
+                let colorClass = 'text-cyan-400';
+                if (l.category === 'battle') {
+                    infoDisplay = 'ARENA MATCH';
+                } else if (l.category === 'penalty') {
+                    const penaltiesStrs = Object.entries(l.rewards || {}).map(([k, v]) => `${v} ${k === 'ap' ? 'AP' : (k === 'intelligence' ? 'INT' : k.toUpperCase().slice(0, 3))}`);
+                    infoDisplay = penaltiesStrs.join(', ');
+                    colorClass = 'text-red-500';
+                } else {
+                    infoDisplay = `+${l.xp} XP`;
+                }
+
                 d.innerHTML = `
                     <div class="mb-3 text-white uppercase font-black tracking-tight text-sm md:text-base">${l.text}</div>
                     <div class="flex flex-wrap justify-between items-center gap-2 text-slate-500 text-[10px] md:text-xs">
                         <span>${l.date} ${l.time}</span>
-                        <span class="text-cyan-400 font-black">${l.category === 'battle' ? 'ARENA MATCH' : '+' + l.xp + ' XP'}</span>
+                        <span class="${colorClass} font-black">${infoDisplay}</span>
                     </div>
                 `;
                 c.appendChild(d);
@@ -1656,19 +1780,28 @@
                 if (battleState.role === 'host' && decodedText.startsWith("G|")) {
                     if (html5QrcodeScanner) { html5QrcodeScanner.stop().catch(()=>{}); html5QrcodeScanner = null; }
                     let parts = decodedText.split('|');
-                    battleState.p2 = { name: parts[1], stats: parts[2].split(',').map(Number) };
+                    if (parts.length >= 4) {
+                        battleState.p2 = { id: parts[1], name: parts[2], stats: parts[3].split(',').map(Number) };
+                    } else {
+                        battleState.p2 = { id: parts[1], name: parts[1], stats: parts[2].split(',').map(Number) };
+                    }
                     startBattleSequence();
                 } else if (battleState.role === 'guest' && decodedText.startsWith("H|")) {
                     if (html5QrcodeScanner) { html5QrcodeScanner.stop().catch(()=>{}); html5QrcodeScanner = null; }
                     
                     let parts = decodedText.split('|');
-                    battleState.p1 = { name: parts[1], stats: parts[2].split(',').map(Number) };
-                    battleState.chosen = parts[3].split(',').map(Number);
+                    if (parts.length >= 5) {
+                        battleState.p1 = { id: parts[1], name: parts[2], stats: parts[3].split(',').map(Number) };
+                        battleState.chosen = parts[4].split(',').map(Number);
+                    } else {
+                        battleState.p1 = { id: parts[1], name: parts[1], stats: parts[2].split(',').map(Number) };
+                        battleState.chosen = parts[3].split(',').map(Number);
+                    }
                     
                     let myStatsArr = STATS.map(s => state.player.stats[s] || 0);
-                    battleState.p2 = { name: state.player.name, stats: myStatsArr };
+                    battleState.p2 = { id: state.player.id, name: state.player.name, stats: myStatsArr };
                     
-                    let rawGuest = `G|${state.player.name}|${myStatsArr.join(',')}`;
+                    let rawGuest = `G|${state.player.id}|${state.player.name}|${myStatsArr.join(',')}`;
                     let guestPayload = btoa(encodeURIComponent(rawGuest));
                     battleState.myCode = guestPayload;
                     
@@ -1702,9 +1835,9 @@
             }
             
             let myStatsArr = STATS.map(s => state.player.stats[s] || 0);
-            battleState.p1 = { name: state.player.name, stats: myStatsArr };
+            battleState.p1 = { id: state.player.id, name: state.player.name, stats: myStatsArr };
             
-            let rawHost = `H|${state.player.name}|${myStatsArr.join(',')}|${battleState.chosen.join(',')}`;
+            let rawHost = `H|${state.player.id}|${state.player.name}|${myStatsArr.join(',')}|${battleState.chosen.join(',')}`;
             let hostPayload = btoa(encodeURIComponent(rawHost));
             battleState.myCode = hostPayload;
             
@@ -1727,14 +1860,19 @@
                     if (html5QrcodeScanner) { html5QrcodeScanner.stop().catch(()=>{}); html5QrcodeScanner = null; }
                     
                     let parts = decodedText.split('|');
-                    battleState.p1 = { name: parts[1], stats: parts[2].split(',').map(Number) };
-                    battleState.chosen = parts[3].split(',').map(Number);
+                    if (parts.length >= 5) {
+                        battleState.p1 = { id: parts[1], name: parts[2], stats: parts[3].split(',').map(Number) };
+                        battleState.chosen = parts[4].split(',').map(Number);
+                    } else {
+                        battleState.p1 = { id: parts[1], name: parts[1], stats: parts[2].split(',').map(Number) };
+                        battleState.chosen = parts[3].split(',').map(Number);
+                    }
                     
                     let myStatsArr = STATS.map(s => state.player.stats[s] || 0);
-                    battleState.p2 = { name: state.player.name, stats: myStatsArr };
+                    battleState.p2 = { id: state.player.id, name: state.player.name, stats: myStatsArr };
                     
                     // Guest generates response QR
-                    let guestPayload = `G|${state.player.name}|${myStatsArr.join(',')}`;
+                    let guestPayload = btoa(encodeURIComponent(`G|${state.player.id}|${state.player.name}|${myStatsArr.join(',')}`));
                     document.getElementById('scanner-container').classList.add('hidden');
                     document.getElementById('qr-container').classList.remove('hidden');
                     new QRious({ element: document.getElementById('battle-qr'), value: guestPayload, size: 220, background: '#ffffff', foreground: '#000000' });
@@ -1782,23 +1920,39 @@
             
             let myScore = battleState.role === 'host' ? p1Wins : p2Wins;
             let oppScore = battleState.role === 'host' ? p2Wins : p1Wins;
+            let opponentId = battleState.role === 'host' ? battleState.p2.id : battleState.p1.id;
             let opponentName = battleState.role === 'host' ? battleState.p2.name : battleState.p1.name;
+            let opponentStatsArr = battleState.role === 'host' ? battleState.p2.stats : battleState.p1.stats;
             
             let result = 'draw';
             if (myScore > oppScore) result = 'win';
             else if (oppScore > myScore) result = 'loss';
             
             if (!state.battleStats) state.battleStats = { total: { wins: 0, losses: 0, draws: 0 }, players: {} };
-            if (result === 'win') state.battleStats.total.wins++;
-            else if (result === 'loss') state.battleStats.total.losses++;
-            else state.battleStats.total.draws++;
             
-            if (!state.battleStats.players[opponentName]) {
-                state.battleStats.players[opponentName] = { wins: 0, losses: 0, draws: 0 };
+            if (state.battleStats.players[opponentName] && !state.battleStats.players[opponentName].name) {
+                state.battleStats.players[opponentId] = state.battleStats.players[opponentName];
+                delete state.battleStats.players[opponentName];
             }
-            if (result === 'win') state.battleStats.players[opponentName].wins++;
-            else if (result === 'loss') state.battleStats.players[opponentName].losses++;
-            else state.battleStats.players[opponentName].draws++;
+
+            if (!state.battleStats.players[opponentId]) {
+                state.battleStats.players[opponentId] = { name: opponentName, wins: 0, losses: 0, draws: 0 };
+            } else {
+                state.battleStats.players[opponentId].name = opponentName;
+            }
+            
+            if (!state.battleStats.players[opponentId].knownStats) {
+                state.battleStats.players[opponentId].knownStats = {};
+            }
+            
+            for (let i = 0; i < 3; i++) {
+                let statIdx = battleState.chosen[i];
+                state.battleStats.players[opponentId].knownStats[STATS[statIdx]] = opponentStatsArr[statIdx];
+            }
+
+            if (result === 'win') { state.battleStats.players[opponentId].wins++; state.battleStats.total.wins++; }
+            else if (result === 'loss') { state.battleStats.players[opponentId].losses++; state.battleStats.total.losses++; }
+            else { state.battleStats.players[opponentId].draws++; state.battleStats.total.draws++; }
 
             let logText = `Battle vs ${opponentName} | Score: ${myScore}-${oppScore} (${result.toUpperCase()})`;
             state.logs.unshift({ questId: 'battle_' + Date.now(), date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString(), text: logText, category: 'battle', xp: 0 });
@@ -1819,7 +1973,69 @@
             }
         }
 
-        function openBattleStatsModal() {
+        function switchStatsTab(tab) {
+            document.querySelectorAll('.stats-tab').forEach(x => x.classList.remove('active'));
+            const activeTab = document.getElementById('tab-stats-' + tab);
+            if (activeTab) activeTab.classList.add('active');
+            
+            document.getElementById('stats-general-container').classList.toggle('hidden', tab !== 'general');
+            document.getElementById('stats-combat-container').classList.toggle('hidden', tab !== 'combat');
+        }
+
+        function openStatsModal() {
+            // General Stats Processing
+            let totalDailies = 0, totalWeeklies = 0, totalMonthlies = 0, totalQuests = 0;
+            let totalDated = 0, totalQP = 0, totalAPFromQuests = 0;
+            let pathClears = { work: 0, free: 0, event: 0, all: 0 };
+            
+            state.logs.forEach(l => {
+                if (l.category === 'daily' || l.category === 'dated' || l.category === 'path_goal') totalDailies++;
+                else if (l.category === 'weekly') totalWeeklies++;
+                else if (l.category === 'monthly') totalMonthlies++;
+                
+                if (l.category === 'dated') totalDated++;
+                if (l.category === 'path_goal') {
+                    if (pathClears[l.path] !== undefined) pathClears[l.path]++;
+                    else pathClears.all++;
+                }
+                
+                if (l.category !== 'battle' && l.category !== 'penalty') totalQuests++;
+                
+                totalQP += (l.points || 0);
+                if (l.rewards && l.rewards.ap) totalAPFromQuests += l.rewards.ap;
+            });
+            
+            let totalAchievements = state.unlockedAchievementIds.length;
+            let achievementAP = state.unlockedAchievementIds.reduce((sum, idObj) => {
+                let achId = typeof idObj === 'string' ? idObj : idObj.id;
+                let ach = state.achievements.find(a => a.id === achId);
+                return sum + (ach?.rewards?.ap || 0);
+            }, 0);
+            let levelAP = (state.player.level - 1);
+            let totalAP = totalAPFromQuests + achievementAP + levelAP;
+            
+            let totalBattles = state.battleStats ? (state.battleStats.total.wins + state.battleStats.total.losses + state.battleStats.total.draws) : 0;
+            
+            document.getElementById('stats-gen-started').innerText = state.accountCreated || '--';
+            document.getElementById('stats-gen-total').innerText = totalQuests;
+            document.getElementById('stats-gen-qp').innerText = totalQP;
+            document.getElementById('stats-gen-ap').innerText = totalAP;
+            document.getElementById('stats-gen-achievements').innerText = totalAchievements;
+            document.getElementById('stats-gen-battles').innerText = totalBattles;
+            document.getElementById('stats-gen-h-streak').innerText = state.player.highestStreak || 0;
+            document.getElementById('stats-gen-h-nonstreak').innerText = state.player.highestNonCompletionStreak || 0;
+
+            document.getElementById('stats-gen-daily').innerText = totalDailies;
+            document.getElementById('stats-gen-weekly').innerText = totalWeeklies;
+            document.getElementById('stats-gen-monthly').innerText = totalMonthlies;
+            document.getElementById('stats-gen-dated').innerText = totalDated;
+
+            document.getElementById('stats-gen-path-work').innerText = pathClears.work;
+            document.getElementById('stats-gen-path-free').innerText = pathClears.free;
+            document.getElementById('stats-gen-path-event').innerText = pathClears.event;
+            document.getElementById('stats-gen-path-all').innerText = pathClears.all;
+
+            // Combat Stats Processing
             if (!state.battleStats) state.battleStats = { total: { wins: 0, losses: 0, draws: 0 }, players: {} };
             
             document.getElementById('stats-total-wins').innerText = state.battleStats.total.wins;
@@ -1835,20 +2051,39 @@
             } else {
                 players.forEach(p => {
                     const pStats = state.battleStats.players[p];
-                    listContainer.innerHTML += `
-                        <div class="bg-black/40 border-2 border-white/5 p-4 rounded-2xl flex justify-between items-center">
-                            <span class="font-black text-white uppercase tracking-wider text-lg">${p}</span>
-                            <div class="flex gap-4 text-center">
-                                <div class="w-12"><span class="block text-[10px] text-slate-500 uppercase">W</span><span class="text-green-400 font-black">${pStats.wins}</span></div>
-                                <div class="w-12"><span class="block text-[10px] text-slate-500 uppercase">D</span><span class="text-yellow-400 font-black">${pStats.draws}</span></div>
-                                <div class="w-12"><span class="block text-[10px] text-slate-500 uppercase">L</span><span class="text-red-500 font-black">${pStats.losses}</span></div>
+                    const displayName = pStats.name || p;
+                    
+                    let safeId = p.replace(/[^a-zA-Z0-9]/g, '');
+                    let statsHtml = '<div class="grid grid-cols-4 gap-2 mt-4 pt-4 border-t border-white/10 hidden" id="opp-stats-' + safeId + '">';
+                    STATS.forEach(s => {
+                        let val = (pStats.knownStats && pStats.knownStats[s] !== undefined) ? pStats.knownStats[s] : 0;
+                        statsHtml += `
+                            <div class="text-center">
+                                <span class="block text-[9px] text-slate-500 uppercase">${s === 'intelligence' ? 'INT' : s.slice(0, 3)}</span>
+                                <span class="text-cyan-400 font-black">${val}</span>
                             </div>
+                        `;
+                    });
+                    statsHtml += '</div>';
+                    
+                    listContainer.innerHTML += `
+                        <div class="bg-black/40 border-2 border-white/5 p-4 rounded-2xl flex flex-col cursor-pointer hover:border-cyan-500 transition-colors" onclick="document.getElementById('opp-stats-${safeId}').classList.toggle('hidden')">
+                            <div class="flex justify-between items-center w-full gap-2">
+                                <span class="font-black text-white uppercase tracking-wider text-sm md:text-lg truncate">${displayName}</span>
+                                <div class="flex gap-2 md:gap-4 text-center shrink-0">
+                                    <div class="w-8 md:w-12"><span class="block text-[10px] text-slate-500 uppercase">W</span><span class="text-green-400 font-black">${pStats.wins}</span></div>
+                                    <div class="w-8 md:w-12"><span class="block text-[10px] text-slate-500 uppercase">D</span><span class="text-yellow-400 font-black">${pStats.draws}</span></div>
+                                    <div class="w-8 md:w-12"><span class="block text-[10px] text-slate-500 uppercase">L</span><span class="text-red-500 font-black">${pStats.losses}</span></div>
+                                </div>
+                            </div>
+                            ${statsHtml}
                         </div>
                     `;
                 });
             }
             
-            document.getElementById('battle-stats-modal').classList.remove('hidden');
+            switchStatsTab('general');
+            document.getElementById('stats-modal').classList.remove('hidden');
         }
 
         window.onload = init;
