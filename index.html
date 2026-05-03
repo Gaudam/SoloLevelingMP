@@ -459,7 +459,6 @@
                     <option value="daily">DAILY</option>
                     <option value="weekly">WEEKLY</option>
                     <option value="monthly">MONTHLY</option>
-                    <option value="dated">DATED</option>
                     <option value="battle">BATTLES</option>
                     <option value="penalty">PENALTIES</option>
                 </select>
@@ -587,10 +586,6 @@
                             <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Monthly</p>
                             <p id="stats-gen-monthly" class="text-xl md:text-3xl font-black text-purple-400 system-font">0</p>
                         </div>
-                        <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
-                            <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Dated</p>
-                            <p id="stats-gen-dated" class="text-xl md:text-3xl font-black text-rose-400 system-font">0</p>
-                        </div>
                     </div>
 
                     <h3 class="text-sm font-black text-slate-400 uppercase tracking-[0.2em] pl-2 mt-6">Path Masteries</h3>
@@ -647,7 +642,7 @@
                 const label = s === 'intelligence' ? 'INTELLIGENCE' : s.toUpperCase();
                 for(let v=25; v<=1000; v+=25) list.push({ id: `ach_${s}_${v}`, title: `${label} ${v}`, desc: `Increase ${s} to ${v}.`, type: s, operator: '>=', value: v, rewards: { ap: 1 } });
             });
-            ['daily', 'weekly', 'monthly', 'dated', 'one_time'].forEach(cat => {
+            ['daily', 'weekly', 'monthly', 'one_time'].forEach(cat => {
                 [1, 5, 10, 25, 50, 100, 200, 300, 500, 1000, 10000, 100000, 1000000].forEach(v => list.push({ id: `ach_q_${cat}_${v}`, title: `${v} ${cat.toUpperCase()} CLEARS`, desc: `Finish ${v} ${cat} objectives.`, type: `cat_${cat}`, operator: '>=', value: v, rewards: { ap: Math.ceil(v/10) } }));
             });
             ['all', 'work', 'free', 'event'].forEach(path => {
@@ -665,7 +660,7 @@
             // DAILY QUESTS
             { id: 'd1', text: "Wake up before 7:00 AM", xp: 15, xpPercent: 1, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { willpower: 1 }, deadline: '', points: 1 },
                 { id: 'd2', text: "8 Hours Productive Work", xp: 80, xpPercent: 3, category: 'daily', path: 'work', isOneTime: false, repeatable: false, rewards: { willpower: 1, sense: 1 }, deadline: '', points: 3 },
-                { id: 'd3', text: "Healthy Breakfast", xp: 20, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 1 }, deadline: '', points: 1 },
+                { id: 'd3', text: "Healthy Breakfast", xp: 200, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 1 }, deadline: '', points: 1 },
                 { id: 'd4', text: "Healthy Lunch", xp: 20, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 1 }, deadline: '', points: 1 },
                 { id: 'd5', text: "Healthy Dinner", xp: 20, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 1 }, deadline: '', points: 1 },
                 { id: 'd6', text: "7/8 Hours Sleep", xp: 20, xpPercent: 2, category: 'daily', path: 'all', isOneTime: false, repeatable: false, rewards: { vitality: 1 }, deadline: '', points: 1 },
@@ -710,7 +705,7 @@
             quests: [...DEFAULT_QUESTS],
             trackers: [{ id: 't1', name: 'Body Weight', unit: 'kg', data: [] }],
             achievements: generateBaseAchievements(),
-            completedIds: [], weeklyCompletedIds: [], monthlyCompletedIds: [], datedCompletedIds: [], permanentCompletedIds: [], unlockedAchievementIds: [],
+            completedIds: [], weeklyCompletedIds: [], monthlyCompletedIds: [], permanentCompletedIds: [], unlockedAchievementIds: [],
             completionTimestamps: {},
             lastDailyReset: null, lastWeeklyReset: null, lastMonthlyReset: null, lastStreakDate: null, currentPath: 'all', logs: [],
             dailyPoints: 0,
@@ -909,9 +904,8 @@
         function toggleQuestState(rawId) {
             const id = String(rawId);
             const isDone = state.completedIds.some(x => String(x) === id) || 
-                           state.weeklyCompletedIds.some(x => String(x) === id) || 
-                           state.monthlyCompletedIds.some(x => String(x) === id) || 
-                           state.datedCompletedIds.some(x => String(x) === id);
+                           state.weeklyCompletedIds.some(x => String(x) === id) ||
+                           state.monthlyCompletedIds.some(x => String(x) === id);
             
             const q = state.quests.find(x => String(x.id) === id);
             
@@ -921,7 +915,7 @@
                     const log = state.logs[logIdx];
                     let xpToRefund = log.xp || 0;
                     
-                    if (log.category === 'daily' || log.category === 'dated') {
+                    if (log.category === 'daily') {
                         let pts = log.points !== undefined ? log.points : (q ? (q.points || 1) : 1);
                         state.dailyPoints -= pts;
                         if(state.dailyPoints < 0) state.dailyPoints = 0;
@@ -983,7 +977,6 @@
                 state.completedIds = state.completedIds.filter(x => String(x) !== id);
                 state.weeklyCompletedIds = state.weeklyCompletedIds.filter(x => String(x) !== id);
                 state.monthlyCompletedIds = state.monthlyCompletedIds.filter(x => String(x) !== id);
-                state.datedCompletedIds = state.datedCompletedIds.filter(x => String(x) !== id);
                 state.permanentCompletedIds = state.permanentCompletedIds.filter(x => String(x) !== id);
                 if(state.completionTimestamps[id]) delete state.completionTimestamps[id];
                 
@@ -1001,9 +994,8 @@
             if (!q) return;
 
             const isDone = state.completedIds.some(x => String(x) === id) || 
-                           state.weeklyCompletedIds.some(x => String(x) === id) || 
-                           state.monthlyCompletedIds.some(x => String(x) === id) || 
-                           state.datedCompletedIds.some(x => String(x) === id);
+                           state.weeklyCompletedIds.some(x => String(x) === id) ||
+                           state.monthlyCompletedIds.some(x => String(x) === id);
             
             if (isDone && !q.repeatable) return; 
             if(!q) return;
@@ -1011,7 +1003,7 @@
             const totalXp = (q.xp || 0) + Math.floor((q.xpPercent || 0)/100 * state.player.requiredXp);
             
             if (!q.repeatable) {
-                const targetList = q.category === 'daily' ? state.completedIds : (q.category === 'weekly' ? state.weeklyCompletedIds : (q.category === 'monthly' ? state.monthlyCompletedIds : state.datedCompletedIds));
+                const targetList = q.category === 'daily' ? state.completedIds : (q.category === 'weekly' ? state.weeklyCompletedIds : state.monthlyCompletedIds);
                 targetList.push(id);
                 if (q.isOneTime) state.permanentCompletedIds.push(id);
                 state.completionTimestamps[id] = Date.now();
@@ -1023,7 +1015,7 @@
             if (q.rewards) applyPoints(q.rewards);
 
             let pointsGained = 0;
-            if (q.category === 'daily' || q.category === 'dated') {
+            if (q.category === 'daily') {
                 pointsGained = (q.points || 1);
                 state.dailyPoints += pointsGained;
                 checkThresholdRewards();
@@ -1232,25 +1224,23 @@
             const now = Date.now();
             const hideThreshold = 10 * 60 * 1000;
             state.quests.forEach(q => {
-                const isRelevant = q.category === cat || (cat === 'daily' && q.category === 'dated');
-                if (!isRelevant) return;
+                if (q.category !== cat) return;
                 if (cat === 'daily' && q.path !== 'all' && q.path !== state.currentPath) return;
                 
-                const list = q.category === 'daily' ? state.completedIds : (q.category === 'weekly' ? state.weeklyCompletedIds : (q.category === 'monthly' ? state.monthlyCompletedIds : state.datedCompletedIds));
+                const list = q.category === 'daily' ? state.completedIds : (q.category === 'weekly' ? state.weeklyCompletedIds : state.monthlyCompletedIds);
                 const isDone = q.repeatable ? false : list.some(x => String(x) === String(q.id));
                 
                 if (!q.repeatable && isDone && state.completionTimestamps[q.id] && (now - state.completionTimestamps[q.id] > hideThreshold)) return;
                 if (state.permanentCompletedIds.some(x => String(x) === String(q.id)) && !isDone) return;
                 
                 const div = document.createElement('div');
-                const isDated = q.category === 'dated';
-                div.className = `quest-item p-3 md:p-4 rounded-[24px] md:rounded-[32px] flex items-center justify-between cursor-pointer border-2 ${isDone ? 'opacity-40 grayscale border-slate-800 bg-[#111114]' : (isDated ? 'bg-[#1a1313] border-rose-900/30 hover:border-rose-500 shadow-lg' : 'bg-[#111114] border-[#1e1e24] hover:border-cyan-500 shadow-xl')}`;
+                div.className = `quest-item p-3 md:p-4 rounded-[24px] md:rounded-[32px] flex items-center justify-between cursor-pointer border-2 ${isDone ? 'opacity-40 grayscale border-slate-800 bg-[#111114]' : 'bg-[#111114] border-[#1e1e24] hover:border-cyan-500 shadow-xl'}`;
                 div.onclick = () => toggleQuestState(q.id);
                 
                 const deadlineTag = q.deadline ? `<span class="text-rose-500 text-[10px] uppercase font-black tracking-widest">[DUE: ${q.deadline}]</span> ` : '';
                 const rewardText = q.rewards?.ap > 0 ? `+${q.rewards.ap} AP` : Object.entries(q.rewards || {}).filter(([k,v])=>v>0).map(([k,v])=>`+${v} ${k === 'intelligence' ? 'INT' : k.slice(0,3).toUpperCase()}`).join(', ');
                 
-                const questPointDisplay = (q.category === 'daily' || q.category === 'dated') ? ` • ${q.points || 1} QP` : '';
+                const questPointDisplay = (q.category === 'daily') ? ` • ${q.points || 1} QP` : '';
                 const formatReward = rewardText ? ` • ${rewardText}` : '';
                 
                 div.innerHTML = `
@@ -1349,7 +1339,6 @@
                                     <option value="daily" ${q.category==='daily'?'selected':''}>DAILY</option>
                                     <option value="weekly" ${q.category==='weekly'?'selected':''}>WEEKLY</option>
                                     <option value="monthly" ${q.category==='monthly'?'selected':''}>MONTHLY</option>
-                                    <option value="dated" ${q.category==='dated'?'selected':''}>DATED</option>
                                 </select>
                                 <select onchange="updateProp('quests','${q.id}','path',this.value)" class="w-full bg-slate-900 border border-slate-800 px-2 py-1 text-[13px] text-center rounded-2xl text-white">
                                     <option value="all" ${q.path==='all'?'selected':''}>ALL</option>
@@ -1463,7 +1452,6 @@
                                     <option value="cat_daily" ${ach.type==='cat_daily'?'selected':''}>DAILY</option>
                                     <option value="cat_weekly" ${ach.type==='cat_weekly'?'selected':''}>WEEKLY</option>
                                     <option value="cat_monthly" ${ach.type==='cat_monthly'?'selected':''}>MONTHLY</option>
-                                    <option value="cat_dated" ${ach.type==='cat_dated'?'selected':''}>DATED</option>
                                     <option value="cat_one_time" ${ach.type==='cat_one_time'?'selected':''}>ONE-TIME</option>
                                     <option value="cat_repeatable" ${ach.type==='cat_repeatable'?'selected':''}>REPEATABLE</option>
                                     <option value="cat_path_all" ${ach.type==='cat_path_all'?'selected':''}>PATH: ALL</option>
@@ -2072,15 +2060,13 @@
         function openStatsModal() {
             // General Stats Processing
             let totalDailies = 0, totalWeeklies = 0, totalMonthlies = 0, totalQuests = 0;
-            let totalDated = 0, totalQP = 0, totalAPFromQuests = 0;
+            let totalQP = 0, totalAPFromQuests = 0;
             let pathClears = { work: 0, free: 0, event: 0, all: 0 };
             
             state.logs.forEach(l => {
-                if (l.category === 'daily' || l.category === 'dated' || l.category === 'path_goal') totalDailies++;
+                if (l.category === 'daily' || l.category === 'path_goal') totalDailies++;
                 else if (l.category === 'weekly') totalWeeklies++;
                 else if (l.category === 'monthly') totalMonthlies++;
-                
-                if (l.category === 'dated') totalDated++;
                 if (l.category === 'path_goal') {
                     if (pathClears[l.path] !== undefined) pathClears[l.path]++;
                     else pathClears.all++;
@@ -2115,7 +2101,6 @@
             document.getElementById('stats-gen-daily').innerText = totalDailies;
             document.getElementById('stats-gen-weekly').innerText = totalWeeklies;
             document.getElementById('stats-gen-monthly').innerText = totalMonthlies;
-            document.getElementById('stats-gen-dated').innerText = totalDated;
 
             document.getElementById('stats-gen-path-work').innerText = pathClears.work;
             document.getElementById('stats-gen-path-free').innerText = pathClears.free;
