@@ -529,7 +529,7 @@
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                         <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center items-center overflow-hidden">
                             <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Account Started</p>
-                            <p id="stats-gen-started" class="text-base md:text-1xl font-black text-cyan-400 system-font text-center w-full break-words">--</p>
+                            <p id="stats-gen-started" class="text-xs md:text-lg font-black text-cyan-400 system-font text-center w-full break-words">--</p>
                         </div>
                         <div class="bg-[#111114] border-2 border-[#1e1e24] p-4 rounded-2xl text-center shadow-xl flex flex-col justify-center">
                             <p class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-1 leading-tight">Total Quests</p>
@@ -626,9 +626,11 @@
         const STATS = ['strength', 'intelligence', 'agility', 'vitality', 'sense', 'willpower', 'focus', 'instinct'];
         const STORAGE_KEY = 'solo_leveling_' + window.location.pathname.replace(/[^a-zA-Z0-9]/g, '_');
         
-        const generateBaseAchievements = () => {
+            const generateBaseAchievements = () => {
             const list = [];
             for(let l=2; l<=100; l+=1) list.push({ id: `ach_lv_${l}`, title: `Level ${l} Hunter`, desc: `Reach Level ${l}.`, type: 'level', operator: '>=', value: l, rewards: { ap: 2 } });
+            [10, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 100000, 1000000].forEach(v => list.push({ id: `ach_tqp_${v}`, title: `${v} TOTAL QP`, desc: `Accumulate a total of ${v} Quest Points.`, type: 'total_qp', operator: '>=', value: v, rewards: { ap: Math.ceil(v/50) || 1 } }));
+            [1, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 100000, 1000000].forEach(v => list.push({ id: `ach_tq_${v}`, title: `${v} TOTAL QUESTS`, desc: `Clear a total of ${v} system quests.`, type: 'total_quests', operator: '>=', value: v, rewards: { ap: Math.ceil(v/20) || 1 } }));
             STATS.forEach(s => {
                 const label = s === 'intelligence' ? 'INTELLIGENCE' : s.toUpperCase();
                 for(let v=25; v<=1000; v+=25) list.push({ id: `ach_${s}_${v}`, title: `${label} ${v}`, desc: `Increase ${s} to ${v}.`, type: s, operator: '>=', value: v, rewards: { ap: 1 } });
@@ -637,10 +639,13 @@
                 [1, 5, 10, 25, 50, 100, 200, 300, 500, 1000, 10000, 100000, 1000000].forEach(v => list.push({ id: `ach_q_${cat}_${v}`, title: `${v} ${cat.toUpperCase()} CLEARS`, desc: `Finish ${v} ${cat} objectives.`, type: `cat_${cat}`, operator: '>=', value: v, rewards: { ap: Math.ceil(v/10) } }));
             });
             ['all', 'work', 'free', 'event'].forEach(path => {
+                [1, 3, 5, 10, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 350, 400, 450, 500, 1000].forEach(v => list.push({ id: `ach_q_path_${path}_${v}`, title: `${v} ${path.toUpperCase()} PATH GOALS`, desc: `Complete the daily quest goal ${v} times on ${path} path.`, type: `cat_path_${path}`, operator: '>=', value: v, rewards: { ap: Math.ceil(v/10) } }));
                 [1, 5, 10, 25, 50, 100, 200, 300, 500].forEach(v => list.push({ id: `ach_q_path_${path}_${v}`, title: `${v} ${path.toUpperCase()} PATH GOALS`, desc: `Complete the daily quest goal ${v} times on ${path} path.`, type: `cat_path_${path}`, operator: '>=', value: v, rewards: { ap: Math.ceil(v/10) } }));
             });
             [1, 5, 10, 25, 50, 100, 200, 500].forEach(v => list.push({ id: `ach_q_repeatable_${v}`, title: `${v} REPEATABLE CLEARS`, desc: `Complete ${v} repeatable quest objectives.`, type: 'cat_repeatable', operator: '>=', value: v, rewards: { ap: Math.ceil(v/10) } }));
             [3, 7, 14, 30, 60, 90, 100, 120, 150, 180, 210, 240, 270, 300, 330, 365].forEach(v => list.push({ id: `ach_str_${v}`, title: `${v} DAY STREAK`, desc: `Persistence for ${v} days.`, type: 'streak', operator: '>=', value: v, rewards: { ap: 5 } }));
+            [1, 3, 5, 10, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 350, 400, 450, 500, 1000].forEach(v => list.push({ id: `ach_bw_${v}`, title: `${v} BATTLES WON`, desc: `Win ${v} Arena Matches.`, type: 'battles_won', operator: '>=', value: v, rewards: { ap: Math.ceil(v/100) } }));
+            [1, 3, 5, 10, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 350, 400, 450, 500, 1000].forEach(v => list.push({ id: `ach_tb_${v}`, title: `${v} TOTAL BATTLES`, desc: `Fight ${v} Arena Matches.`, type: 'total_battles', operator: '>=', value: v, rewards: { ap: Math.ceil(v/100) } }));
             return list;
         };
 
