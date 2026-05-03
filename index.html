@@ -381,7 +381,7 @@
                 <div class="flex flex-col md:flex-row md:items-center gap-3 w-full md:w-auto">
                     <input id="gallery-search" type="text" value="" oninput="updateGallerySearch(this)" placeholder="Search Hall of Fame..." class="flex-1 bg-black border-2 border-slate-800 text-sm p-3 rounded-xl text-slate-400 focus:border-cyan-500 outline-none uppercase font-black">
                     <div class="flex gap-4 w-full md:w-auto">
-                        <select id="gallery-filter" onchange="renderAchievementGallery()" class="flex-1 md:flex-none bg-black border-2 border-slate-800 text-sm p-3 rounded-xl text-slate-400 focus:border-cyan-500 outline-none uppercase font-black"><option value="all">ALL</option><option value="unlocked">UNLOCKED</option><option value="locked">LOCKED</option><option value="level">LEVEL</option><option value="stats">STATS</option><option value="streak">STREAK</option><option value="cat_daily">DAILY CLEARS</option><option value="cat_weekly">WEEKLY CLEARS</option><option value="cat_monthly">MONTHLY CLEARS</option><option value="cat_path_all">PATH ALL</option><option value="cat_path_work">PATH WORK</option><option value="cat_path_free">PATH FREE</option><option value="cat_path_event">PATH EVENT</option></select>
+                        <select id="gallery-filter" onchange="renderAchievementGallery()" class="flex-1 md:flex-none bg-black border-2 border-slate-800 text-sm p-3 rounded-xl text-slate-400 focus:border-cyan-500 outline-none uppercase font-black"><option value="all">ALL</option><option value="unlocked">UNLOCKED</option><option value="locked">LOCKED</option><option value="level">LEVEL</option><option value="total_quests">TOTAL QUESTS</option><option value="total_qp">TOTAL QP</option><option value="stats">STATS</option><option value="streak">STREAK</option><option value="battles_won">BATTLES WON</option><option value="total_battles">TOTAL BATTLES</option><option value="cat_daily">DAILY CLEARS</option><option value="cat_weekly">WEEKLY CLEARS</option><option value="cat_monthly">MONTHLY CLEARS</option><option value="cat_path_all">PATH ALL</option><option value="cat_path_work">PATH WORK</option><option value="cat_path_free">PATH FREE</option><option value="cat_path_event">PATH EVENT</option></select>
                         <button onclick="closeModals()" class="px-10 py-4 bg-slate-800 hover:bg-slate-700 rounded-2xl font-black text-sm uppercase transition-colors">Close</button>
                     </div>
                 </div>
@@ -794,6 +794,9 @@
                 else if (ach.type === 'streak') val = state.player.streak;
                 else if (ach.type === 'total_quests') val = state.logs.length;
                 else if (ach.type === 'cat_repeatable') val = state.logs.filter(l => l.repeatable).length;
+                else if (ach.type === 'total_qp') val = state.logs.reduce((acc, l) => acc + (l.points || 0), 0);
+                else if (ach.type === 'battles_won') val = state.battleStats ? state.battleStats.total.wins : 0;
+                else if (ach.type === 'total_battles') val = state.battleStats ? (state.battleStats.total.wins + state.battleStats.total.losses + state.battleStats.total.draws) : 0;
                 else if (ach.type.startsWith('cat_path_')) {
                     const pathType = ach.type.replace('cat_path_','');
                     val = state.logs.filter(l => l.category === 'path_goal' && l.path === pathType).length;
@@ -829,6 +832,9 @@
                 else if (ach.type === 'streak') val = state.player.streak;
                 else if (ach.type === 'total_quests') val = state.logs.length;
                 else if (ach.type === 'cat_repeatable') val = state.logs.filter(l => l.repeatable).length;
+                else if (ach.type === 'total_qp') val = state.logs.reduce((acc, l) => acc + (l.points || 0), 0);
+                else if (ach.type === 'battles_won') val = state.battleStats ? state.battleStats.total.wins : 0;
+                else if (ach.type === 'total_battles') val = state.battleStats ? (state.battleStats.total.wins + state.battleStats.total.losses + state.battleStats.total.draws) : 0;
                 else if (ach.type.startsWith('cat_path_')) {
                     const pathType = ach.type.replace('cat_path_','');
                     val = state.logs.filter(l => l.category === 'path_goal' && l.path === pathType).length;
@@ -1019,6 +1025,7 @@
             });
             revalidateAchievements();
             checkAchievements();
+            checkLevelUp();
             notify("Objective Completed", true);
             renderUI(); saveSystemData();
         }
@@ -1428,6 +1435,7 @@
                                 <select onchange="updateProp('achievements','${ach.id}','type',this.value)" class="w-full bg-slate-900 border border-slate-800 px-3 py-2 text-[12px] rounded-2xl text-white">
                                     <option value="level" ${ach.type==='level'?'selected':''}>LVL</option>
                                     <option value="total_quests" ${ach.type==='total_quests'?'selected':''}>TOTAL</option>
+                                    <option value="total_qp" ${ach.type==='total_qp'?'selected':''}>TOTAL QP</option>
                                     <option value="cat_daily" ${ach.type==='cat_daily'?'selected':''}>DAILY</option>
                                     <option value="cat_weekly" ${ach.type==='cat_weekly'?'selected':''}>WEEKLY</option>
                                     <option value="cat_monthly" ${ach.type==='cat_monthly'?'selected':''}>MONTHLY</option>
@@ -1439,6 +1447,8 @@
                                     <option value="cat_path_free" ${ach.type==='cat_path_free'?'selected':''}>PATH: FREE</option>
                                     <option value="cat_path_event" ${ach.type==='cat_path_event'?'selected':''}>PATH: EVENT</option>
                                     <option value="streak" ${ach.type==='streak'?'selected':''}>STREAK</option>
+                                    <option value="battles_won" ${ach.type==='battles_won'?'selected':''}>BATTLES WON</option>
+                                    <option value="total_battles" ${ach.type==='total_battles'?'selected':''}>TOTAL BATTLES</option>
                                     ${STATS.map(s => `<option value="${s}" ${ach.type===s?'selected':''}>${s.toUpperCase()}</option>`).join('')}
                                     <optgroup label="Trackers">${state.trackers.map(t=>(`<option value="tracker_${t.id}" ${ach.type==='tracker_'+t.id?'selected':''}>${t.name}</option>`)).join('')}</optgroup>
                                 </select>
@@ -1694,6 +1704,10 @@
                 if(f==='unlocked') return isU; 
                 if(f==='locked') return !isU; 
                 if(f==='level') return ach.type === 'level';
+                if(f==='total_quests') return ach.type === 'total_quests';
+                if(f==='total_qp') return ach.type === 'total_qp';
+                if(f==='battles_won') return ach.type === 'battles_won';
+                if(f==='total_battles') return ach.type === 'total_battles';
                 if(f==='stats') return STATS.includes(ach.type);
                 if(f==='streak') return ach.type === 'streak';
                 if(f==='cat_daily') return ach.type === 'cat_daily';
@@ -1704,6 +1718,7 @@
                 if(f==='cat_path_free') return ach.type === 'cat_path_free';
                 if(f==='cat_path_event') return ach.type === 'cat_path_event';
                 return true; 
+                return f === 'all'; 
             }).filter(ach => {
                 const needle = achievementGallerySearchText.trim().toLowerCase();
                 if(!needle) return true;
@@ -2094,4 +2109,5 @@
         window.onload = init;
     </script>
 </body>
+</html>
 </html>
